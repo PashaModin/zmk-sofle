@@ -1,0 +1,64 @@
+{
+  "_comment": [
+    "Paste the contents of the \"hooks\" key below into ~/.claude/settings.json,",
+    "merging with anything already there. See docs/soflectl.md.",
+    "",
+    "PermissionRequest gets the long timeout because it waits for you to press",
+    "a button. Everything else is 2-3 seconds so a wedged daemon can never stall",
+    "a session for long - a timed-out HTTP hook is a non-blocking error, and",
+    "execution continues as if the hook were not configured at all.",
+    "",
+    "The daemon's own approve_timeout_s (90s) is deliberately below the 120s",
+    "here, so it decides to defer before Claude Code gives up on the request."
+  ],
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 3 }] }
+    ],
+    "SessionEnd": [
+      { "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 2 }] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 3 }] }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 3 }]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 120 }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 3 }]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 3 }]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt|idle_prompt|agent_needs_input|agent_completed",
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 3 }]
+      }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 3 }] }
+    ],
+    "StopFailure": [
+      {
+        "matcher": "*",
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:8787/hook", "timeout": 2 }]
+      }
+    ]
+  }
+}

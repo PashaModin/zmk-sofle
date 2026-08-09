@@ -1,4 +1,8 @@
 name: Build ZMK firmware
+
+# Builds every image listed in build.yaml and attaches them to the run as the
+# "firmware" artifact. See README.md -> "Build and flash".
+
 on:
   workflow_dispatch:
   push:
@@ -7,5 +11,10 @@ on:
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
-
+    # Pinned to the same ZMK release that config/west.yml builds against.
+    #
+    # This must be kept in step with the `zmk` revision in config/west.yml. The
+    # reusable workflow and the firmware source are one codebase: tracking @main
+    # here while pinning an older release there gives you a build script from a
+    # newer ZMK than the code it is building, and it fails in confusing ways.
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3.0

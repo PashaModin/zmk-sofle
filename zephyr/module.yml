@@ -1,3 +1,13 @@
+# Declares this repository as a Zephyr/ZMK module.
+#
+#   board_root: .   supplies the eyelash_sofle board under boards/
+#   cmake / kconfig  build the agentctl sources at the repository root
+#
+# agentctl compiles to nothing unless CONFIG_AGENTCTL is set, which only the
+# central half enables (see config/eyelash_sofle_left.conf).
+
 build:
+  cmake: .
+  kconfig: Kconfig
   settings:
-     board_root: .
+    board_root: .
