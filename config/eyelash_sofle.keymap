@@ -11,7 +11,7 @@
  *   layer0   base        (default)
  *   layer_1  nav & mouse (hold &mo 1, left thumb)
  *   layer_2  system      (hold &mo 2, right thumb)
- *   layer_3  media       (hold &mo 3, right-hand bottom row)
+ *   layer_3  media + agent control (hold &mo 3, right-hand bottom row)
  *
  * Note: editing this keymap with keymap-editor rewrites the whole file and will
  * delete these comments. Editing by hand, or with ZMK Studio, leaves them alone.
@@ -99,16 +99,25 @@
             display-name = "System";
         };
 
+        // Media, and the agent layer. The five &none bindings are the 5-way
+        // navigation switch: while this layer is held, agentctl claims those
+        // contacts and reports them to the soflectl daemon instead of typing.
+        // They are &none rather than &trans so that nothing is sent even if
+        // agentctl is compiled out. See docs/soflectl.md.
         layer_3 {
             bindings = <
-&trans  &kp C_BRIGHTNESS_DEC  &kp C_BRI_INC  &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS  &trans  &trans    &trans  &kp K_PREVIOUS  &kp K_PLAY_PAUSE  &kp K_NEXT  &kp K_MUTE  &kp C_VOLUME_DOWN  &kp C_VOLUME_UP
-&trans  &trans                &trans         &trans                             &trans  &trans    &trans  &trans          &trans            &trans      &trans      &trans             &trans
-&trans  &trans                &trans         &trans                             &trans  &trans    &trans  &trans          &trans            &trans      &trans      &trans             &trans
-&trans  &trans                &trans         &trans                             &trans  &trans    &trans  &trans          &trans            &trans      &trans      &trans             &trans
-&trans  &trans                &trans         &trans                             &trans  &trans    &trans  &trans          &trans            &trans      &trans      &trans
+&trans  &kp C_BRIGHTNESS_DEC  &kp C_BRI_INC  &kp C_AC_DESKTOP_SHOW_ALL_WINDOWS  &trans  &trans    &none   &kp K_PREVIOUS  &kp K_PLAY_PAUSE  &kp K_NEXT  &kp K_MUTE  &kp C_VOLUME_DOWN  &kp C_VOLUME_UP
+&trans  &trans                &trans         &trans                             &trans  &trans    &none   &trans          &trans            &trans      &trans      &trans             &trans
+&trans  &trans                &trans         &trans                             &trans  &trans    &none   &trans          &trans            &trans      &trans      &trans             &trans
+&trans  &trans                &trans         &trans                             &trans  &trans    &none   &trans          &trans            &trans      &trans      &trans             &trans
+&trans  &trans                &trans         &trans                             &trans  &trans    &none   &trans          &trans            &trans      &trans      &trans
             >;
 
-            display-name = "Media";
+            // Scroll rather than volume: agentctl also reports encoder turns
+            // to the host on this layer, and scrolling is the less annoying
+            // thing to trigger alongside cycling sessions.
+            sensor-bindings = <&scroll_encoder>;
+            display-name = "Agent";
         };
     };
 };

@@ -1,0 +1,65 @@
+# agentctl - Claude Code control surface on the keyboard.
+#
+# See docs/soflectl.md. The firmware side only renders bytes it is given and
+# reports which physical control moved; all decisions live in the host daemon.
+
+config AGENTCTL
+    bool "Claude Code agent control surface (agentctl)"
+    depends on RAW_HID
+    depends on ZMK_DISPLAY
+    select LV_FONT_MONTSERRAT_8
+    select LV_USE_CANVAS
+    select LV_USE_LABEL
+    help
+      Renders agent status pushed from the host over raw HID onto this half's
+      nice!view, and reports 5-way switch and encoder events back to the host.
+
+      Requires RAW_HID, which ZMK only allows on the central half of a split.
+
+if AGENTCTL
+
+config AGENTCTL_LOG_LEVEL
+    int "agentctl log level"
+    default 3
+
+config AGENTCTL_HOLD_MS
+    int "Milliseconds a button must be held to report a hold instead of a tap"
+    default 400
+
+config AGENTCTL_STALE_MS
+    int "Milliseconds without host traffic before the display shows OFFLINE"
+    default 5000
+
+config AGENTCTL_LAYER
+    int "Keymap layer on which the 5-way switch drives the agent"
+    default 3
+    help
+      On every other layer the 5-way keeps its normal bindings. Keeping the
+      agent controls behind a held layer is what stops a stray thumb from
+      approving a tool call.
+
+menu "5-way switch key positions"
+
+config AGENTCTL_POS_UP
+    int "Key position of the 5-way UP contact"
+    default 6
+
+config AGENTCTL_POS_DOWN
+    int "Key position of the 5-way DOWN contact"
+    default 19
+
+config AGENTCTL_POS_LEFT
+    int "Key position of the 5-way LEFT contact"
+    default 32
+
+config AGENTCTL_POS_RIGHT
+    int "Key position of the 5-way RIGHT contact"
+    default 45
+
+config AGENTCTL_POS_CENTER
+    int "Key position of the 5-way CENTER contact"
+    default 58
+
+endmenu
+
+endif # AGENTCTL

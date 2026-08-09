@@ -18,6 +18,10 @@ manifest:
     - name: gpeye
       url-base: https://github.com/GPeye
 
+    # Raw HID transport, used by agentctl to talk to the soflectl daemon.
+    - name: zzeneg
+      url-base: https://github.com/zzeneg
+
   projects:
     - name: zmk
       remote: zmkfirmware
@@ -27,6 +31,11 @@ manifest:
     - name: mario-peripheral-animation
       remote: gpeye
       revision: 1aa3950d6c86b4240b3f79d06bdbb04c5d920711 # 2024-09-02, last commit
+
+    # This module's own CI pins zmk v0.3, which is what we build against too.
+    - name: zmk-raw-hid
+      remote: zzeneg
+      revision: e25e325adc90fccb60cc08393b8c2b0ba6d647c7 # 2026-05-11, "pin zmk v0.3"
 
   self:
     # This repository is itself a ZMK module: it supplies the `eyelash_sofle`
