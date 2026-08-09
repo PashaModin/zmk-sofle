@@ -14,7 +14,7 @@ include:
   # ZMK Studio is enabled so the keymap can also be edited live over USB at
   # https://zmk.studio - the studio-rpc-usb-uart snippet is what carries that.
   # ---------------------------------------------------------------------------
-  - board: eyelash_sofle_left/nrf52840/zmk
+  - board: eyelash_sofle_left
     shield: nice_view
     snippet: studio-rpc-usb-uart
     cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n
@@ -29,7 +29,7 @@ include:
   #
   # nice_view_custom is the Mario animation shield, pulled in by config/west.yml.
   # ---------------------------------------------------------------------------
-  - board: eyelash_sofle_right/nrf52840/zmk
+  - board: eyelash_sofle_right
     shield: nice_view_custom
     artifact-name: eyelash_sofle_right
 
@@ -41,10 +41,10 @@ include:
   # Use them when the halves stop talking to each other - flash BOTH, then flash
   # the normal images above again. See README.md -> "Troubleshooting".
   # ---------------------------------------------------------------------------
-  - board: eyelash_sofle_left/nrf52840/zmk
+  - board: eyelash_sofle_left
     shield: settings_reset
     artifact-name: eyelash_sofle_reset_left
 
-  - board: eyelash_sofle_right/nrf52840/zmk
+  - board: eyelash_sofle_right
     shield: settings_reset
     artifact-name: eyelash_sofle_reset_right

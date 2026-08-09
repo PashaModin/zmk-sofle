@@ -1,7 +1,7 @@
 # Hardware reference
 
 Facts about this specific keyboard, each verified against the board definition
-in `boards/eyelashperipherals/eyelash_sofle/` or against ZMK v0.3.0 itself.
+in `boards/arm/eyelash_sofle/` or against ZMK v0.3.0 itself.
 Written down
 because most of them are not obvious from the outside and several differ from
 what generic Sofle guides assume.
@@ -114,40 +114,57 @@ Note that `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT` (deep sleep) and `CONFIG_ZMK_IDLE_TIME
 (the much shorter idle state, which only dims things) are different symbols and
 are easy to confuse.
 
+## Keeping ZMK's version consistent
+
+Two places refer to ZMK, and **they must name the same release**:
+
+- `config/west.yml` pins the firmware source (`zmk`, currently `v0.3.0`).
+- `.github/workflows/build.yml` pins the reusable build workflow
+  (`build-user-config.yml@v0.3.0`).
+
+The reusable workflow and the firmware are one codebase. If the workflow tracks
+`@main` while `west.yml` pins a release, you get a build script from a much
+newer ZMK driving an older one, and it fails in a thoroughly misleading way.
+
+That is exactly what this repository did, and it is worth recording because the
+symptom points nowhere near the cause: the firmware **built and linked
+perfectly**, producing a valid `.uf2` — and then the job failed in a check that
+runs *after* the build. Newer ZMK looks for `CONFIG_ZMK_BOARD_COMPAT=y`, and
+when it is missing runs `west boards --format "{qualifiers}"`. Zephyr 3.5 has no
+`qualifiers` field, so `west` raises `KeyError: 'qualifiers'`, the step exits
+non-zero, and CI never reaches the step that uploads the firmware. The build log
+looks like a success followed by an unrelated crash.
+
+Pinning both to the same release fixes it. When upgrading ZMK, change both.
+
 ## Board definition format
 
-The board lives in `boards/eyelashperipherals/eyelash_sofle/` and is written in
-Zephyr's **hardware model v2**. It was originally supplied in the older v1
-layout (`boards/arm/eyelash_sofle/`, with `Kconfig.board`, plain `<board>.dts`
-and `<board>_defconfig`), which ZMK v0.3.0 no longer expects — its own tree has
-no v1 boards left.
+The board lives in `boards/arm/eyelash_sofle/` and uses Zephyr's **hardware
+model v1**: `Kconfig.board`, plain `<board>.dts`, `<board>_defconfig`, and a
+board target of just `eyelash_sofle_left`.
 
-The symptom of getting this wrong is confusing, so it is worth recording: the
-firmware **built and linked perfectly**, producing a valid `.uf2`, and then the
-job failed in a check that runs afterwards. ZMK's build workflow looks for
-`CONFIG_ZMK_BOARD_COMPAT=y`, and if it is missing runs
-`west boards --format "{qualifiers}"`, which raises `KeyError: 'qualifiers'` on
-a v1 board. CI therefore never reached the step that uploads the firmware.
-
-`ZMK_BOARD_COMPAT` is a hidden Kconfig symbol, so it cannot be forced on from
-`config/eyelash_sofle.conf` — it has to be `select`ed by the board, which is
-what `Kconfig.eyelash_sofle_left` / `_right` now do.
-
-The practical consequence for you: build targets carry qualifiers now.
+This is correct for ZMK v0.3.0, which is built on Zephyr 3.5 and whose own
+boards are all v1 — there is not a single `board.yml` in its tree. Do not
+"modernise" this to hardware model v2 while pinned to v0.3.0; Zephyr 3.5 does
+not understand `board.yml` and will simply report
 
 ```
-eyelash_sofle_left/nrf52840/zmk
-eyelash_sofle_right/nrf52840/zmk
+No board named 'eyelash_sofle_left/nrf52840/zmk' found.
 ```
 
-Plain `eyelash_sofle_left` no longer identifies a board on its own. `build.yaml`
-already uses the qualified names.
+Hardware model v2 — vendor directories, `board.yml`, qualified targets like
+`eyelash_sofle_left/nrf52840/zmk` — becomes *required* only if you move to a ZMK
+built on Zephyr 4.1 (currently `main`). That migration is a package deal: it
+also moves LVGL 8 to LVGL 9, which breaks the `nice_view_custom` Mario shield,
+since it still calls `lv_canvas_transform()` and `LV_IMG_ZOOM_NONE`. ZMK v0.3.0
+is on LVGL 8, which is why that shield works today.
 
 ## Versions this was checked against
 
 | Component | Revision |
 |---|---|
-| ZMK | `v0.3.0` (`edf5c08`) - LVGL 9 |
+| ZMK | `v0.3.0` (`edf5c08`) — Zephyr 3.5, LVGL 8, hardware model v1 |
 | `mario-peripheral-animation` | `1aa3950`, last commit 2024-09-02 |
 
-Both are pinned in `config/west.yml`. See the comment there for why.
+Both are pinned in `config/west.yml`, and the build workflow is pinned to the
+same ZMK release in `.github/workflows/build.yml`. See the comments in both.
