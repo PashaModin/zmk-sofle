@@ -3,3 +3,8 @@ zmk/
 modules/
 tools/
 .west/
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/

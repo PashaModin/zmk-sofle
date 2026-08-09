@@ -10,6 +10,9 @@ push and attaches the result to the workflow run.
 
 - **[docs/hardware.md](docs/hardware.md)** — verified facts about this board:
   key positions, display geometry, which half does what.
+- **[docs/soflectl.md](docs/soflectl.md)** — using the keyboard as a control
+  surface for Claude Code: what the display shows, and what the 5-way switch
+  approves.
 - **[docs/upstream.md](docs/upstream.md)** — the original vendor's changelog and
   contact details, kept from the repository this was forked from.
 
@@ -30,7 +33,7 @@ let go.
 | 0 | Base | *(default)* | QWERTY. Encoder turns volume up/down. Nav switch is arrow keys, pressing it in is Enter. |
 | 1 | Nav & Mouse | left thumb (`&mo 1`) | F1–F12, mouse buttons, Home/End/PgUp/PgDn, arrow cluster on the right hand, RGB underglow controls. Encoder scrolls. Nav switch moves the mouse pointer. |
 | 2 | System | right thumb (`&mo 2`) | Bluetooth profile select and clear, USB/Bluetooth output switching, bootloader, reset, soft-off. Encoder scrolls. |
-| 3 | Media | right-hand bottom row (`&mo 3`) | Screen brightness, play/pause, next/previous track, volume. |
+| 3 | Agent & Media | right-hand bottom row (`&mo 3`) | Screen brightness, play/pause, next/previous track, volume. While held, the 5-way switch drives Claude Code — see [docs/soflectl.md](docs/soflectl.md). |
 
 ## Build and flash
 
@@ -87,8 +90,12 @@ config/
 boards/arm/eyelash_sofle/
                                Board definition: pins, matrix, encoder, displays.
                                Comes from the vendor; you rarely touch this.
+agentctl/                      Firmware for the Claude Code control surface.
+daemon/                        The soflectl host daemon, and its tests.
+scripts/                       Helpers for setting soflectl up.
+claude/                        Paste-able Claude Code hook configuration.
 keymap-drawer/                 Auto-generated keymap images. Do not edit by hand.
-docs/                          Hardware reference and upstream notes.
+docs/                          Hardware reference, soflectl guide, upstream notes.
 .github/workflows/             Build and keymap-drawing automation.
 ```
 
