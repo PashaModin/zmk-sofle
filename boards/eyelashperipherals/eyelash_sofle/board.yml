@@ -1,0 +1,24 @@
+# Zephyr hardware model v2 board descriptor.
+#
+# Declares the two halves as separate boards sharing one SoC and one "zmk"
+# variant. The full build target for each is therefore:
+#
+#   eyelash_sofle_left/nrf52840/zmk
+#   eyelash_sofle_right/nrf52840/zmk
+#
+# which is what build.yaml passes.
+
+boards:
+  - name: eyelash_sofle_left
+    vendor: eyelashperipherals
+    socs:
+      - name: nrf52840
+        variants:
+          - name: zmk
+
+  - name: eyelash_sofle_right
+    vendor: eyelashperipherals
+    socs:
+      - name: nrf52840
+        variants:
+          - name: zmk
