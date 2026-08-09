@@ -4,7 +4,7 @@
 if(CONFIG_AGENTCTL)
   zephyr_library_named(agentctl)
   zephyr_library_include_directories(agentctl/include)
-  zephyr_library_include_directories(${ZEPHYR_BASE}/../zmk/app/include)
+  zephyr_library_include_directories(${APPLICATION_SOURCE_DIR}/include)
 
   zephyr_library_sources(agentctl/src/protocol.c)
   zephyr_library_sources(agentctl/src/input.c)

@@ -1,0 +1,26 @@
+[project]
+name = "soflectl"
+version = "0.1.0"
+description = "Drive a Sofle v2's displays and 5-way switch from Claude Code hooks"
+requires-python = ">=3.11"
+dependencies = [
+    "aiohttp>=3.9",
+    "hidapi>=0.14",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+soflectl = "soflectl.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["soflectl*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
