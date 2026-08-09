@@ -84,7 +84,8 @@ config/
   eyelash_sofle.keymap         The keymap: layers, encoder, behaviours
   eyelash_sofle.conf           Kconfig settings shared by both halves. Commented.
   eyelash_sofle.json           Physical layout, used by keymap-editor
-boards/arm/eyelash_sofle/      Board definition: pins, matrix, encoder, displays.
+boards/eyelashperipherals/eyelash_sofle/
+                               Board definition: pins, matrix, encoder, displays.
                                Comes from the vendor; you rarely touch this.
 keymap-drawer/                 Auto-generated keymap images. Do not edit by hand.
 docs/                          Hardware reference and upstream notes.

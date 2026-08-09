@@ -1,7 +1,8 @@
 # Hardware reference
 
 Facts about this specific keyboard, each verified against the board definition
-in `boards/arm/eyelash_sofle/` or against ZMK v0.3.0 itself. Written down
+in `boards/eyelashperipherals/eyelash_sofle/` or against ZMK v0.3.0 itself.
+Written down
 because most of them are not obvious from the outside and several differ from
 what generic Sofle guides assume.
 
@@ -112,6 +113,35 @@ drops the Bluetooth link until the next keypress.
 Note that `CONFIG_ZMK_IDLE_SLEEP_TIMEOUT` (deep sleep) and `CONFIG_ZMK_IDLE_TIMEOUT`
 (the much shorter idle state, which only dims things) are different symbols and
 are easy to confuse.
+
+## Board definition format
+
+The board lives in `boards/eyelashperipherals/eyelash_sofle/` and is written in
+Zephyr's **hardware model v2**. It was originally supplied in the older v1
+layout (`boards/arm/eyelash_sofle/`, with `Kconfig.board`, plain `<board>.dts`
+and `<board>_defconfig`), which ZMK v0.3.0 no longer expects — its own tree has
+no v1 boards left.
+
+The symptom of getting this wrong is confusing, so it is worth recording: the
+firmware **built and linked perfectly**, producing a valid `.uf2`, and then the
+job failed in a check that runs afterwards. ZMK's build workflow looks for
+`CONFIG_ZMK_BOARD_COMPAT=y`, and if it is missing runs
+`west boards --format "{qualifiers}"`, which raises `KeyError: 'qualifiers'` on
+a v1 board. CI therefore never reached the step that uploads the firmware.
+
+`ZMK_BOARD_COMPAT` is a hidden Kconfig symbol, so it cannot be forced on from
+`config/eyelash_sofle.conf` — it has to be `select`ed by the board, which is
+what `Kconfig.eyelash_sofle_left` / `_right` now do.
+
+The practical consequence for you: build targets carry qualifiers now.
+
+```
+eyelash_sofle_left/nrf52840/zmk
+eyelash_sofle_right/nrf52840/zmk
+```
+
+Plain `eyelash_sofle_left` no longer identifies a board on its own. `build.yaml`
+already uses the qualified names.
 
 ## Versions this was checked against
 
